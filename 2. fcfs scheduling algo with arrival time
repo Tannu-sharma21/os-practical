@@ -1,0 +1,62 @@
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+struct Process {
+    int id;
+    int arrival_time;
+    int burst_time;
+};
+
+bool compareArrivalTime(Process a, Process b) {
+    return a.arrival_time < b.arrival_time;
+}
+
+void FCFS(Process proc[], int n) {
+    // Sort processes by arrival time
+    sort(proc, proc + n, compareArrivalTime);
+
+    int wt[n], tat[n], total_wt = 0, total_tat = 0, ct[n];
+
+    // Set completion time of first process
+    ct[0] = proc[0].arrival_time + proc[0].burst_time;
+    wt[0] = 0;
+    tat[0] = ct[0] - proc[0].arrival_time;
+
+    // Calculate completion time, waiting time, and turnaround time for remaining processes
+    for (int i = 1; i < n; i++) {
+        wt[i] = max(0, ct[i - 1] - proc[i].arrival_time);
+        ct[i] = ct[i - 1] + proc[i].burst_time;
+        tat[i] = ct[i] - proc[i].arrival_time;
+        total_wt += wt[i];
+        total_tat += tat[i];
+    }
+
+    // Print the calculated values
+    cout << "Process ID\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << "   " << proc[i].id << "\t\t" << proc[i].arrival_time << "\t\t" << proc[i].burst_time << "\t\t" << wt[i] << "\t\t" << tat[i] << endl;
+    }
+
+    cout << "\nAverage waiting time = " << (float)total_wt / (float)n;
+    cout << "\nAverage turnaround time = " << (float)total_tat / (float)n;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of processes: ";
+    cin >> n;
+
+    Process proc[n];
+    cout << "Enter the arrival time and burst time for each process:\n";
+    for (int i = 0; i < n; i++) {
+        proc[i].id = i + 1;
+        cout << "Process " << i + 1 << ": ";
+        cin >> proc[i].arrival_time >> proc[i].burst_time;
+    }
+
+    FCFS(proc, n);
+
+    return 0;
+}
