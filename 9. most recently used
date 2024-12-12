@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+using namespace std;
+
+void MRU_PageReplacement(const vector<int>& pages, int capacity) {
+    unordered_map<int, int> pageTable; // Stores page -> last accessed index
+    vector<int> frames; // Stores current pages in memory
+    int pageFaults = 0;
+
+    for (int i = 0; i < pages.size(); ++i) {
+        int page = pages[i];
+
+        if (find(frames.begin(), frames.end(), page) == frames.end()) {
+            // Page not in memory (Page Fault)
+            pageFaults++;
+
+            if (frames.size() >= capacity) {
+                // Find the most recently used page to replace
+                int mostRecent = -1, replaceIndex = -1;
+                for (int j = 0; j < frames.size(); ++j) {
+                    if (pageTable[frames[j]] > mostRecent) {
+                        mostRecent = pageTable[frames[j]];
+                        replaceIndex = j;
+                    }
+                }
+                frames[replaceIndex] = page; // Replace MRU page
+            } else {
+                // Add the new page to memory
+                frames.push_back(page);
+            }
+        }
+
+        // Update page access time
+        pageTable[page] = i;
+
+        // Print the current state of memory frames
+        cout << "Step " << i + 1 << ": ";
+        for (int p : frames) {
+            cout << p << " ";
+        }
+        cout << "\n";
+    }
+
+    cout << "\nTotal Page Faults: " << pageFaults << endl;
+}
+
+int main() {
+    vector<int> pages = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2}; // Reference string
+    int capacity = 3; // Number of frames
+
+    cout << "MRU Page Replacement Algorithm:\n";
+    MRU_PageReplacement(pages, capacity);
+
+    return 0;
+}
