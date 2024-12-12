@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <list>
+
+using namespace std;
+
+// Function to implement LRU Page Replacement Algorithm
+void LRUPageReplacement(int pages[], int n, int capacity) {
+    unordered_map<int, list<int>::iterator> pageMap; // Maps pages to their iterator in the list
+    list<int> lruList; // Maintains the order of page usage
+    int pageFaults = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int page = pages[i];
+
+        // Check if the page is not in memory
+        if (pageMap.find(page) == pageMap.end()) {
+            // Page fault occurs
+            ++pageFaults;
+
+            // If memory is full, remove the least recently used page
+            if (lruList.size() == capacity) {
+                int leastUsed = lruList.back(); // Least recently used page
+                lruList.pop_back(); // Remove it from the list
+                pageMap.erase(leastUsed); // Remove it from the map
+            }
+
+            // Add the new page to the front of the list
+            lruList.push_front(page);
+            pageMap[page] = lruList.begin();
+        } else {
+            // Page is already in memory, move it to the front of the list
+            lruList.erase(pageMap[page]);
+            lruList.push_front(page);
+            pageMap[page] = lruList.begin();
+        }
+    }
+
+    cout << "Total Page Faults: " << pageFaults << endl;
+}
+
+int main() {
+    int pages[] = {1, 2, 3, 4, 2, 1, 5, 3, 4, 2};
+    int n = sizeof(pages) / sizeof(pages[0]);
+    int capacity = 3;
+
+    LRUPageReplacement(pages, n, capacity);
+
+    return 0;
+}
