@@ -1,0 +1,49 @@
+#include <iostream>
+#include <queue>
+#include <unordered_set>
+using namespace std;
+
+void fifoPageReplacement(int pages[], int n, int capacity) {
+    // Set to store pages in memory
+    unordered_set<int> memory;
+    // Queue to maintain the order of pages
+    queue<int> pageQueue;
+
+    int pageFaults = 0;
+
+    for (int i = 0; i < n; i++) {
+        // Check if the page is not in memory
+        if (memory.find(pages[i]) == memory.end()) {
+            // If memory is full, remove the oldest page
+            if (memory.size() == capacity) {
+                int oldestPage = pageQueue.front();
+                pageQueue.pop();
+                memory.erase(oldestPage);
+            }
+
+            // Add the current page to memory and queue
+            memory.insert(pages[i]);
+            pageQueue.push(pages[i]);
+            pageFaults++;
+        }
+
+        // Print current memory state
+        cout << "Memory: ";
+        for (auto page : memory) {
+            cout << page << " ";
+        }
+        cout << endl;
+    }
+
+    cout << "Total Page Faults: " << pageFaults << endl;
+}
+
+int main() {
+    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
+    int n = sizeof(pages) / sizeof(pages[0]);
+    int capacity = 3; // Number of frames in memory
+
+    fifoPageReplacement(pages, n, capacity);
+
+    return 0;
+}
