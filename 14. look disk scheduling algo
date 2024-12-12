@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+void LOOK(vector<int>& disk_requests, int head, int direction) {
+    // Sort the disk requests
+    sort(disk_requests.begin(), disk_requests.end());
+
+    // Find the position of the head in the sorted disk requests
+    auto it = lower_bound(disk_requests.begin(), disk_requests.end(), head);
+    int pos = it - disk_requests.begin();
+
+    // If the direction is to the left, reverse the direction to move the head to the leftmost
+    if (direction == 0) {
+        // Move left to right (decrease the head value)
+        for (int i = pos - 1; i >= 0; i--) {
+            cout << "Served " << disk_requests[i] << endl;
+        }
+        // Move right to left
+        for (int i = pos; i < disk_requests.size(); i++) {
+            cout << "Served " << disk_requests[i] << endl;
+        }
+    } else {
+        // Move left to right (increase the head value)
+        for (int i = pos; i < disk_requests.size(); i++) {
+            cout << "Served " << disk_requests[i] << endl;
+        }
+        // Move right to left
+        for (int i = pos - 1; i >= 0; i--) {
+            cout << "Served " << disk_requests[i] << endl;
+        }
+    }
+}
+
+int main() {
+    vector<int> disk_requests = {176, 79, 34, 60, 92, 11, 41, 114};
+    int head = 50;  // Initial head position
+    int direction = 1;  // 1 for right, 0 for left
+
+    cout << "Disk requests are served in the following order:\n";
+    LOOK(disk_requests, head, direction);
+
+    return 0;
+}
