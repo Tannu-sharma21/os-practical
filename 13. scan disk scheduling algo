@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+void SCAN(int disk_size, int head, vector<int>& requests, bool direction) {
+    // Sort the requests in ascending order
+    sort(requests.begin(), requests.end());
+    
+    // Add the head position to the request list
+    requests.push_back(head);
+    
+    // Sort again after adding head position
+    sort(requests.begin(), requests.end());
+
+    // Find the index of the head position
+    int idx = 0;
+    for (int i = 0; i < requests.size(); i++) {
+        if (requests[i] == head) {
+            idx = i;
+            break;
+        }
+    }
+
+    // Move towards the end or beginning based on direction
+    if (direction) {
+        // Scan towards the right (increasing order)
+        for (int i = idx; i < requests.size(); i++) {
+            cout << "Move to " << requests[i] << endl;
+        }
+        // After reaching the rightmost, go to the leftmost
+        for (int i = idx - 1; i >= 0; i--) {
+            cout << "Move to " << requests[i] << endl;
+        }
+    } else {
+        // Scan towards the left (decreasing order)
+        for (int i = idx; i >= 0; i--) {
+            cout << "Move to " << requests[i] << endl;
+        }
+        // After reaching the leftmost, go to the rightmost
+        for (int i = idx + 1; i < requests.size(); i++) {
+            cout << "Move to " << requests[i] << endl;
+        }
+    }
+}
+
+int main() {
+    int disk_size, head;
+    vector<int> requests;
+    int num_requests;
+    
+    // Input disk size, head position, and the requests
+    cout << "Enter disk size: ";
+    cin >> disk_size;
+    
+    cout << "Enter initial head position: ";
+    cin >> head;
+    
+    cout << "Enter number of requests: ";
+    cin >> num_requests;
+
+    cout << "Enter the request positions: ";
+    for (int i = 0; i < num_requests; i++) {
+        int request;
+        cin >> request;
+        requests.push_back(request);
+    }
+
+    // Direction of scan: true for right, false for left
+    bool direction;
+    cout << "Enter direction (1 for right, 0 for left): ";
+    cin >> direction;
+
+    // Perform the SCAN algorithm
+    SCAN(disk_size, head, requests, direction);
+
+    return 0;
+}
