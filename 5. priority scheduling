@@ -1,0 +1,70 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// Structure for a process
+struct Process {
+    int id;         // Process ID
+    int burstTime;  // Burst Time
+    int priority;   // Priority
+};
+
+// Comparator function to sort processes by priority (higher priority first)
+bool compareByPriority(Process a, Process b) {
+    return a.priority > b.priority;
+}
+
+void priorityScheduling(vector<Process> &processes) {
+    // Sort processes by priority
+    sort(processes.begin(), processes.end(), compareByPriority);
+
+    int n = processes.size();
+    int currentTime = 0;
+    int totalWaitTime = 0;
+    int totalTurnaroundTime = 0;
+
+    cout << "\nExecution Order:\n";
+    cout << "Process ID\tBurst Time\tPriority\tWait Time\tTurnaround Time\n";
+
+    for (int i = 0; i < n; i++) {
+        int waitTime = currentTime; // Wait time for the current process
+        int turnaroundTime = waitTime + processes[i].burstTime; // Turnaround time
+
+        totalWaitTime += waitTime;
+        totalTurnaroundTime += turnaroundTime;
+
+        // Update current time after executing this process
+        currentTime += processes[i].burstTime;
+
+        cout << processes[i].id << "\t\t" << processes[i].burstTime << "\t\t"
+             << processes[i].priority << "\t\t" << waitTime << "\t\t"
+             << turnaroundTime << "\n";
+    }
+
+    // Display average waiting and turnaround time
+    cout << "\nAverage Wait Time: " << (float)totalWaitTime / n << endl;
+    cout << "Average Turnaround Time: " << (float)totalTurnaroundTime / n << endl;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of processes: ";
+    cin >> n;
+
+    vector<Process> processes(n);
+
+    // Input process details
+    for (int i = 0; i < n; i++) {
+        cout << "\nEnter details for Process " << (i + 1) << "\n";
+        processes[i].id = i + 1;
+        cout << "Burst Time: ";
+        cin >> processes[i].burstTime;
+        cout << "Priority (Higher number indicates higher priority): ";
+        cin >> processes[i].priority;
+    }
+
+    priorityScheduling(processes);
+
+    return 0;
+}
