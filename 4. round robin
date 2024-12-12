@@ -1,0 +1,56 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct Process {
+    int id;         // Process ID
+    int burstTime;  // Burst Time
+    int remainingTime; // Remaining Time
+};
+
+void roundRobinScheduling(queue<Process> &processes, int timeQuantum) {
+    int currentTime = 0;
+    
+    cout << "\nExecution order: \n";
+    while (!processes.empty()) {
+        Process current = processes.front();
+        processes.pop();
+
+        if (current.remainingTime > timeQuantum) {
+            cout << "Process " << current.id << " executed from time " << currentTime;
+            currentTime += timeQuantum;
+            current.remainingTime -= timeQuantum;
+            cout << " to " << currentTime << "\n";
+            processes.push(current); // Re-queue the process
+        } else {
+            cout << "Process " << current.id << " executed from time " << currentTime;
+            currentTime += current.remainingTime;
+            cout << " to " << currentTime << "\n";
+        }
+    }
+    cout << "\nAll processes completed.\n";
+}
+
+int main() {
+    int n, timeQuantum;
+
+    cout << "Enter the number of processes: ";
+    cin >> n;
+    
+    queue<Process> processes;
+    for (int i = 0; i < n; ++i) {
+        Process p;
+        p.id = i + 1;
+        cout << "Enter burst time for Process " << p.id << ": ";
+        cin >> p.burstTime;
+        p.remainingTime = p.burstTime;
+        processes.push(p);
+    }
+
+    cout << "Enter time quantum: ";
+    cin >> timeQuantum;
+
+    roundRobinScheduling(processes, timeQuantum);
+
+    return 0;
+}
