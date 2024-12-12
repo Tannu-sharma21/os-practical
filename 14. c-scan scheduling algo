@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class CSCAN {
+public:
+    void schedule(vector<int>& requests, int head, int total_tracks) {
+        // Sort the requests
+        sort(requests.begin(), requests.end());
+
+        // Separate requests into two parts: to the left and to the right of the head
+        vector<int> left, right;
+        for (int request : requests) {
+            if (request < head) {
+                left.push_back(request);
+            } else {
+                right.push_back(request);
+            }
+        }
+
+        // Traverse the right side (from head to max track)
+        cout << "Service Order: ";
+        for (int i = 0; i < right.size(); i++) {
+            cout << right[i] << " ";
+        }
+
+        // Reach the end, then go to the start (0)
+        cout << total_tracks - 1 << " ";
+
+        // Traverse the left side (from 0 to head)
+        for (int i = left.size() - 1; i >= 0; i--) {
+            cout << left[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    CSCAN cscan;
+
+    int head, total_tracks;
+    cout << "Enter the total number of tracks: ";
+    cin >> total_tracks;
+    cout << "Enter the current head position: ";
+    cin >> head;
+
+    int n;
+    cout << "Enter the number of disk requests: ";
+    cin >> n;
+    vector<int> requests(n);
+
+    cout << "Enter the disk requests: ";
+    for (int i = 0; i < n; i++) {
+        cin >> requests[i];
+    }
+
+    cscan.schedule(requests, head, total_tracks);
+
+    return 0;
+}
